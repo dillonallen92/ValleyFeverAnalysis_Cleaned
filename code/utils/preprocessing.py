@@ -8,7 +8,7 @@ import torch
 from sklearn.preprocessing import MinMaxScaler
 
 @dataclass 
-class Dataset:
+class ScaledDataset:
   X_train: Any 
   X_test:  Any
   y_train: Any
@@ -37,7 +37,6 @@ def read_data(data_path: Path) -> pd.DataFrame:
   data_cols : list[str] = [x.lower() for x in df.columns]
   if 'year-month' in data_cols:
     df.drop('Year-Month', axis='columns', inplace=True)
-  print(data_cols)
   return df
 
 def create_feature_target_vecs(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
@@ -45,7 +44,7 @@ def create_feature_target_vecs(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray
   df_cpy = df.copy()
   tgt_col_name : str = "VFRate"
   y_tgt: np.ndarray = df[tgt_col_name].to_numpy()
-  df_cpy.drop(tgt_col_name, axis='columns', inplace=True)
+  df_cpy = df_cpy.drop(tgt_col_name, axis='columns', inplace=True)
   X: np.ndarray = df_cpy.to_numpy()
   return X, y_tgt
   
@@ -83,7 +82,7 @@ def scale_data(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_t
   y_train_scaled = scaler_y.fit_transform(y_train.reshape(-1,1)).flatten()
   y_test_scaled  = scaler_y.transform(y_test.reshape(-1,1)).flatten()
   
-  scaled_dataset : Dataset = Dataset(
+  scaled_dataset : ScaledDataset = ScaledDataset(
     X_train_scaled,
     X_test_scaled, 
     y_train_scaled, 
@@ -94,14 +93,6 @@ def scale_data(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_t
   
   return scaled_dataset
   
-  
-  
-
-
-
-
-
-
 
 
 def main() -> None:
