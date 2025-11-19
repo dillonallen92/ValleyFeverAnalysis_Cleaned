@@ -44,7 +44,7 @@ def create_feature_target_vecs(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray
   df_cpy = df.copy()
   tgt_col_name : str = "VFRate"
   y_tgt: np.ndarray = df[tgt_col_name].to_numpy()
-  df_cpy = df_cpy.drop(tgt_col_name, axis='columns', inplace=True)
+  df_cpy.drop(tgt_col_name, axis='columns', inplace=True)
   X: np.ndarray = df_cpy.to_numpy()
   return X, y_tgt
   
@@ -66,7 +66,7 @@ def train_test_split(X_seq : np.ndarray, y_seq: np.ndarray, test_frac : float) -
   
   return X_train, X_test, y_train, y_test
 
-def scale_data(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test: np.ndarray) -> Dataset:
+def scale_data(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test: np.ndarray) -> ScaledDataset:
   scaler_X: MinMaxScaler = MinMaxScaler()
   scaler_y : MinMaxScaler = MinMaxScaler()
   
@@ -104,6 +104,7 @@ def main() -> None:
   test_frac: float = 0.2
   X_train, X_test, y_train, y_test = train_test_split(X_seq, y_seq, test_frac)
   scaledData = scale_data(X_train, X_test, y_train, y_test)
+  print(scaledData)
   
   
 
