@@ -10,7 +10,7 @@ def config_file_parser(config_path: str) -> tuple[dict[str, str], dict[str, str]
   return lstm_params, file_params
 
 if __name__ == "__main__":
-  file_path = "Project/configs/masked_lstm_config.ini"
+  file_path = "config/masked_lstm_config.ini"
   
   lstm_params, _ = config_file_parser(file_path)
   for k,v in lstm_params.items():
