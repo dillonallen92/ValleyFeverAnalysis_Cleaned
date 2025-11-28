@@ -37,6 +37,8 @@ def read_data(data_path: Path) -> pd.DataFrame:
   data_cols : list[str] = [x.lower() for x in df.columns]
   if 'year-month' in data_cols:
     df.drop('Year-Month', axis='columns', inplace=True)
+  elif 'year_month' in data_cols:
+    df.drop('YEAR_MONTH', axis='columns', inplace=True)
   return df
 
 def create_feature_target_vecs(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
@@ -96,7 +98,7 @@ def scale_data(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_t
 
 
 def main() -> None:
-  fresno_path: Path = Path("data/Fresno_Aggregate.csv")
+  fresno_path: Path = Path("data/merged_rodent_fresno_agg.csv")
   agg_df : pd.DataFrame = read_data(fresno_path)
   print(agg_df)
   X, y = create_feature_target_vecs(agg_df)
