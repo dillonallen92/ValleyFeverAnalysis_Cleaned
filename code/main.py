@@ -25,6 +25,7 @@ from code.utils.plot_losses import plot_loss_curves
 from code.utils.datapipeline import DataPipeline
 from code.utils.window_sizes.sliding_window_pipeline import SlidingWindowPipeline, SlidingWindowBatch
 from code.interpretability.pfi import permutation_feature_importance
+from code.interpretability.pfi_plots import plot_pfi_radar, plot_pfi_bar
 from code.utils.metric_functions import rmse
 
 def main():
@@ -223,10 +224,16 @@ def main():
                                                                   n_repeats = 10
                                                                   )
   
-  pd.DataFrame({
+  pfi_df = pd.DataFrame({
      "Feature": feature_columns,
      "Importance": importances
-  }).to_csv(run_dir/"pfi_importance.csv", index = False)
+  })
+  
+  pfi_df.to_csv(run_dir/"pfi_importance.csv", index = False)
+  
+  plot_pfi_radar(pfi_df, save_path=run_dir/"pfi_radar_plot.png")
+  
+  plot_pfi_bar(pfi_df, save_path=run_dir/"pfi_bar.png")
   
 if __name__ == "__main__":
   main()
