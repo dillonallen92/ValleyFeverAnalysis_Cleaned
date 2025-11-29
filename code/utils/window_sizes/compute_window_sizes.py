@@ -4,7 +4,6 @@ import torch
 import pandas as pd 
 import torch.optim as optim 
 from pathlib import Path 
-from typing import Any 
 
 # My own imports
 from code.models.lstm import LSTM 

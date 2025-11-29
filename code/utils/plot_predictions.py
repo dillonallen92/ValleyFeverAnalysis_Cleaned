@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt 
 import numpy as np 
 
-def plot_predictions(true_train, pred_train, true_test, pred_test, title="Fresno Masked LSTM Results"):
+def plot_predictions(true_train, pred_train, true_test, pred_test, title="Fresno Masked LSTM Results", save_path=""):
   train_len = len(true_train)
   
   full_true = np.concatenate([true_train, true_test])
@@ -17,5 +17,7 @@ def plot_predictions(true_train, pred_train, true_test, pred_test, title="Fresno
   plt.grid(True, alpha = 0.3)
   plt.legend()
   plt.tight_layout()
+  if save_path:
+    plt.savefig(save_path)     
   plt.show()
   

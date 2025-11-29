@@ -28,6 +28,9 @@ class MaskedTrainer:
                     test_loss = self.criterion(preds_test, y_test).item()
                     test_losses.append(test_loss)
                 print(f"Epoch: {epoch + 1:4d} | Train Loss: {loss.item():.4f} | Test Loss: {test_loss:.4f}")
+                
+        history = {"train" : train_losses, "test": test_losses}
+        return history
 
     def evaluate(self, X_test, y_test, mask):
         self.model.eval()
