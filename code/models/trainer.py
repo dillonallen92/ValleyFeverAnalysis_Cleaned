@@ -23,10 +23,10 @@ class Trainer:
     def evaluate(self, X_test, y_test):
         self.model.eval()
         with torch.no_grad():
-            preds = self.model(X_test).cpu().numpy()
-            true  = y_test.cpu().numpy()
+            preds = self.model(X_test).cpu().numpy().reshape(-1, 1)
+            true  = y_test.cpu().numpy().reshape(-1, 1)
+            
+            preds_inv = self.scaler_y.inverse_transform(preds).flatten()
+            true_inv  = self.scaler_y.inverse_transform(true).flatten()
 
-        return (
-            self.scaler_y.inverse_transform(preds),
-            self.scaler_y.inverse_transform(true),
-        )
+        return preds_inv, true_inv
