@@ -5,9 +5,9 @@ def config_file_parser(config_path: str) -> tuple[dict[str, str], dict[str, str]
   config = configparser.ConfigParser()
   config.read(config_path)
   lstm_params = config['lstm_params']
-  file_params = config['file_params']
+  pipeline_params = config['pipeline_params']
   
-  return lstm_params, file_params
+  return lstm_params, pipeline_params
 
 if __name__ == "__main__":
   file_path = "config/masked_lstm_config.ini"

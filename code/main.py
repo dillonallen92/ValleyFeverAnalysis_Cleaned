@@ -24,29 +24,31 @@ from code.utils.plot_predictions import plot_predictions
 from code.utils.plot_losses import plot_loss_curves
 from code.utils.datapipeline import DataPipeline
 from code.utils.window_sizes.sliding_window_pipeline import SlidingWindowPipeline, SlidingWindowBatch
+from code.interpretability.pfi import permutation_feature_importance
+from code.utils.metric_functions import rmse
 
 def main():
   # Change if needed
   config_path = Path("config/masked_lstm_config.ini")
-  data_path   = Path("data/Fresno_Aggregate.csv")
+  data_path   = Path("data/merged_rodent_fresno_agg.csv")
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
   # create the data run directory for results
-  run_dir = Path(f"data/runs/fresno_noRat_{timestamp}")
+  run_dir = Path(f"data/runs/fresno_Rat_{timestamp}")
   run_dir.mkdir(parents=True, exist_ok=True)
   
   # ------------- DO NOT TOUCH BELOW HERE --------------
   
   # load config data
-  lstm_params, _ = config_file_parser(config_path=config_path)
-  hidden_size    = int(lstm_params["hidden_size"])
-  num_layers     = int(lstm_params["num_layers"])
-  dropout        = float(lstm_params["dropout"])
-  learning_rate  = float(lstm_params["learning_rate"])
-  epochs         = int(lstm_params["epochs"])
-  weight_decay   = float(lstm_params["weight_decay"])
-  train_frac     = float(lstm_params["train_frac"])
-  test_frac      = 1 - train_frac
+  lstm_params, pipeline_params = config_file_parser(config_path=config_path)
+  hidden_size                  = int(lstm_params["hidden_size"])
+  num_layers                   = int(lstm_params["num_layers"])
+  dropout                      = float(lstm_params["dropout"])
+  learning_rate                = float(lstm_params["learning_rate"])
+  epochs                       = int(lstm_params["epochs"])
+  weight_decay                 = float(lstm_params["weight_decay"])
+  train_frac                   = float(lstm_params["train_frac"])
+  test_frac                    = 1 - train_frac
   
   # import and clean the dataframe (remove date)
   df = pd.read_csv(data_path)
@@ -90,13 +92,13 @@ def main():
       trainer.train(X_train = batch.X_train, y_train = batch.y_train, epochs=epochs)
       preds, true = trainer.evaluate(batch.X_test, batch.y_test)
       
-      rmse = np.sqrt(np.mean((preds - true)**2))
+      rmse_sw = np.sqrt(np.mean((preds - true)**2))
       results.append({
         "feature": feat_name, 
         "window_size": win_size,
-        "rmse": rmse
+        "rmse": rmse_sw
       })
-      print(f"{feat_name:20s} | w={win_size:2d} | RMSE = {rmse:.4f}")
+      print(f"{feat_name:20s} | w={win_size:2d} | RMSE = {rmse_sw:.4f}")
   
   results_df = pd.DataFrame(results)
   best_vals = results_df.loc[results_df.groupby("feature")["rmse"].idxmin()]
@@ -152,8 +154,8 @@ def main():
     mask= mask_batch.repeat(dataset.X_test.shape[2], 1, 1)
   )
   
-  rmse = np.sqrt(np.mean((preds - true)**2))
-  print(f"Final test RMSE: {rmse:.4f}")
+  rmse_final = np.sqrt(np.mean((preds - true)**2))
+  print(f"Final test RMSE: {rmse_final:.4f}")
   
   # ----------------------------------------------------
   # Compute training predictions
@@ -172,7 +174,7 @@ def main():
   true_test_inv = true
 
   # ----------------------------------------------------
-  # Plot everything
+  # Plot everything and start saving data
   # ----------------------------------------------------
   plot_predictions(
       true_train=true_train_inv,
@@ -210,6 +212,21 @@ def main():
   
   # plot and save history curve
   plot_loss_curves(history, save_path = run_dir/"loss_curves.png")
+  
+  if bool(pipeline_params["run_pfi"]):
+     importances, baseline_error = permutation_feature_importance(model = model,
+                                                                  X_test = dataset.X_test.permute(2,0,1),
+                                                                  y_test = dataset.y_test,
+                                                                  mask = mask_batch.repeat(dataset.X_test.shape[2], 1, 1),
+                                                                  scaler_y = dataset.scaler_y,
+                                                                  metric_fn = rmse,
+                                                                  n_repeats = 10
+                                                                  )
+  
+  pd.DataFrame({
+     "Feature": feature_columns,
+     "Importance": importances
+  }).to_csv(run_dir/"pfi_importance.csv", index = False)
   
 if __name__ == "__main__":
   main()
