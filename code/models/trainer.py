@@ -18,8 +18,6 @@ class Trainer:
             loss.backward()
             self.optimizer.step()
 
-        return
-
     def evaluate(self, X_test, y_test):
         self.model.eval()
         with torch.no_grad():

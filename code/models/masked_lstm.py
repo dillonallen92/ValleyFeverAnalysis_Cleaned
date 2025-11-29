@@ -28,4 +28,4 @@ class MaskedLSTM(nn.Module):
         pooled = (outputs * valid_steps.unsqueeze(-1)).sum(dim=1)
         denom = valid_steps.sum(dim=1, keepdim=True).clamp(min=1.0)
         pooled = pooled / denom
-        return self.fc(pooled).squeeze(-1)
+        return self.fc(pooled)
