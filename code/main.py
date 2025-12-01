@@ -30,12 +30,18 @@ from code.utils.metric_functions import rmse
 
 def main():
   # Change if needed
-  config_path = Path("config/masked_lstm_config.ini")
-  data_path   = Path("data/merged_rodent_fresno_agg.csv")
+  county_name = "Kern"
+  rodent_flag = False
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
-  # create the data run directory for results
-  run_dir = Path(f"data/runs/fresno_Rat_{timestamp}")
+  config_path = Path("config/masked_lstm_config.ini")
+  if rodent_flag:
+    data_path   = Path(f"data/merged_rodent_{county_name.lower()}_agg.csv")
+    run_dir     = Path(f"data/runs/{county_name.lower()}_Rat_{timestamp}")
+  else:
+     data_path  = Path(f"data/{county_name.lower()}_Aggregate.csv")
+     run_dir    = Path(f"data/runs/{county_name.lower()}_noRat_{timestamp}")
+
   run_dir.mkdir(parents=True, exist_ok=True)
   
   # ------------- DO NOT TOUCH BELOW HERE --------------
