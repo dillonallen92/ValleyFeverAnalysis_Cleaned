@@ -1,7 +1,7 @@
 import pandas as pd 
 from pathlib import Path 
 
-rodent_dir: Path = Path("data/Fresno_Rodent_Data")
+rodent_dir: Path = Path("data/Kern_Rodent_Data")
 
 frames:dict = []
 
@@ -23,7 +23,7 @@ main_rodent_df: pd.DataFrame = pd.concat(frames, ignore_index=True)
 main_rodent_df = main_rodent_df.sort_values("YEAR_MONTH").reset_index(drop=True)
 
 # get fresno data, rename the Year-Month index to make merging easier
-main_df: pd.DataFrame = pd.read_csv("data/Fresno_Aggregate.csv")
+main_df: pd.DataFrame = pd.read_csv("data/Kern_Aggregate.csv")
 cpy_main: pd.DataFrame = main_df.copy()
 cpy_main = cpy_main.rename(columns={"Year-Month":"YEAR_MONTH"})
 
@@ -35,7 +35,7 @@ merged: pd.DataFrame = pd.merge(
   how="inner"
 )
 print(merged)
-merged.to_csv('data/merged_rodent_fresno_agg.csv', index=False)
+merged.to_csv('data/merged_rodent_kern_agg.csv', index=False)
 
 
 
