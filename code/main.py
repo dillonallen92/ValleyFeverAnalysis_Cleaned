@@ -188,7 +188,7 @@ def main():
       pred_train=train_preds_inv,
       true_test=true_test_inv,
       pred_test=pred_test_inv,
-      title="Masked LSTM — True vs Predicted",
+      title=f"({county_name}) Masked LSTM — True vs Predicted",
       save_path=run_dir/"prediction_curve.png"
   )
   
@@ -237,9 +237,9 @@ def main():
   
   pfi_df.to_csv(run_dir/"pfi_importance.csv", index = False)
   
-  plot_pfi_radar(pfi_df, save_path=run_dir/"pfi_radar_plot.png")
+  plot_pfi_radar(pfi_df, save_path=run_dir/"pfi_radar_plot.png", title=f"{county_name} Permutation Feature Importance (Radar)")
   
-  plot_pfi_bar(pfi_df, save_path=run_dir/"pfi_bar.png")
+  plot_pfi_bar(pfi_df, save_path=run_dir/"pfi_bar.png", title=f"{county_name} Permutation Feature Importance (Bar)")
   
 if __name__ == "__main__":
   main()

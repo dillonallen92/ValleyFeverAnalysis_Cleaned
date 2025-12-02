@@ -1,7 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
 
-def plot_pfi_radar(df, save_path=None):
+def plot_pfi_radar(df, save_path=None, title="Permutation Feature Importance"):
 
     labels = df["Feature"].tolist()
     values = df["Importance"].tolist()
@@ -30,7 +30,7 @@ def plot_pfi_radar(df, save_path=None):
     ax.fill(angles, values, alpha=0.25)
 
     # Title
-    ax.set_title("Permutation Feature Importance", fontsize=14)
+    ax.set_title(title, fontsize=14)
 
     plt.tight_layout()
 
