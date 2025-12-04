@@ -30,8 +30,8 @@ from code.utils.metric_functions import rmse
 
 def main():
   # Change if needed
-  county_name = "Kern"
-  rodent_flag = False
+  county_name = "Fresno"
+  rodent_flag = True
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
   config_path = Path("config/masked_lstm_config.ini")
