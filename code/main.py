@@ -30,7 +30,7 @@ from code.utils.metric_functions import rmse
 
 def main():
   # Change if needed
-  county_name = "Fresno"
+  county_name = "Kern"
   rodent_flag = True
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -227,7 +227,7 @@ def main():
                                                                   mask = mask_batch.repeat(dataset.X_test.shape[2], 1, 1),
                                                                   scaler_y = dataset.scaler_y,
                                                                   metric_fn = rmse,
-                                                                  n_repeats = 10
+                                                                  n_repeats = 40
                                                                   )
   
   pfi_df = pd.DataFrame({
