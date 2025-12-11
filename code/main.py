@@ -30,7 +30,7 @@ from code.utils.metric_functions import rmse
 
 def main():
   # Change if needed
-  county_name = "Kern"
+  county_name = "Fresno"
   rodent_flag = True
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -235,11 +235,25 @@ def main():
      "Importance": importances
   })
   
+  pfi_df["key"] = pfi_df["Feature"].str.lower()
+  window_sizes["key"] = window_sizes["feature"].str.lower()
+  
+  pfi_df_merged = pfi_df.merge(
+     window_sizes[["key", "feature", "window_size"]],
+     on="key",
+     how="inner"
+  )
+  pfi_df_merged.drop(columns=["key"])
+  
+  pfi_df = pfi_df_merged[["Feature", "Importance", "window_size"]]
+  print(pfi_df)
   pfi_df.to_csv(run_dir/"pfi_importance.csv", index = False)
   
   plot_pfi_radar(pfi_df, save_path=run_dir/"pfi_radar_plot.png", title=f"{county_name} Permutation Feature Importance (Radar)")
   
   plot_pfi_bar(pfi_df, save_path=run_dir/"pfi_bar.png", title=f"{county_name} Permutation Feature Importance (Bar)")
+  
+  plt.show()
   
 if __name__ == "__main__":
   main()

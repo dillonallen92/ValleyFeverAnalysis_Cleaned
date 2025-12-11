@@ -19,5 +19,5 @@ def plot_predictions(true_train, pred_train, true_test, pred_test, title="Fresno
   plt.tight_layout()
   if save_path:
     plt.savefig(save_path)     
-  plt.show()
+ # plt.show()
   

@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 
 def plot_pfi_radar(df, save_path=None, title="Permutation Feature Importance"):
 
-    labels = df["Feature"].tolist()
-    values = df["Importance"].tolist()
+    df_sorted = df.sort_values(by="Importance", ascending = False)
+    labels = df_sorted["Feature"].tolist()
+    values = df_sorted["Importance"].tolist()
 
     values += values[:1]
     angles = np.linspace(0, 2 * np.pi, len(values))
@@ -37,7 +38,7 @@ def plot_pfi_radar(df, save_path=None, title="Permutation Feature Importance"):
     if save_path:
         plt.savefig(save_path, dpi=300)
 
-    plt.show()
+    # plt.show()
 
 def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)"):
 
@@ -45,6 +46,7 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
 
     features = df_sorted["Feature"].values
     values   = df_sorted["Importance"].values
+    windows  = df_sorted["window_size"].values
 
     plt.figure(figsize=(12, 6))
     bars = plt.barh(features, values, color="steelblue")
@@ -52,12 +54,12 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
     plt.gca().invert_yaxis()
 
     # Expand x-axis by 20% on both sides
-    x_min = min(values) * 1.2
-    x_max = max(values) * 1.2
+    x_min = min(values) - 0.5*abs(min(values))
+    x_max = max(values) + 0.5*abs(max(values))
     plt.xlim(x_min, x_max)
 
     # Label text inside bars
-    for bar, val in zip(bars, values):
+    for bar, val, ws in zip(bars, values, windows):
         width = bar.get_width()
         y = bar.get_y() + bar.get_height() / 2
 
@@ -66,7 +68,7 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
             plt.text(
                 width + 0.01 * x_max,
                 y,
-                f"{val:.3f}",
+                f"{val:.3f}\nws = {ws:.0f}",
                 va="center",
                 ha="left",
                 fontsize=10,
@@ -77,7 +79,7 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
             plt.text(
                 width - 0.01 * abs(x_min),
                 y,
-                f"{val:.3f}",
+                f"{val:.3f}\nws = {ws:.0f}",
                 va="center",
                 ha="right",
                 fontsize=10,
@@ -91,4 +93,4 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
     if save_path:
         plt.savefig(save_path, dpi=300)
 
-    plt.show()
+    # plt.show()
