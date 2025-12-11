@@ -20,4 +20,4 @@ def plot_loss_curves(history : dict[str, list[float]], save_path = None):
   if save_path:
     plt.savefig(save_path)
   
-  plt.show()
+  # plt.show()

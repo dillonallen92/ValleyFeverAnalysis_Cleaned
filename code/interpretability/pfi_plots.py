@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 
 def plot_pfi_radar(df, save_path=None, title="Permutation Feature Importance"):
 
-    labels = df["Feature"].tolist()
-    values = df["Importance"].tolist()
+    df_sorted = df.sort_values(by="Importance", ascending = False)
+    labels = df_sorted["Feature"].tolist()
+    values = df_sorted["Importance"].tolist()
 
     values += values[:1]
     angles = np.linspace(0, 2 * np.pi, len(values))
@@ -37,7 +38,7 @@ def plot_pfi_radar(df, save_path=None, title="Permutation Feature Importance"):
     if save_path:
         plt.savefig(save_path, dpi=300)
 
-    plt.show()
+    # plt.show()
 
 def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)"):
 
@@ -52,8 +53,8 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
     plt.gca().invert_yaxis()
 
     # Expand x-axis by 20% on both sides
-    x_min = min(values) * 1.2
-    x_max = max(values) * 1.2
+    x_min = min(values) - 0.3*abs(min(values))
+    x_max = max(values) + 0.2*abs(max(values))
     plt.xlim(x_min, x_max)
 
     # Label text inside bars
@@ -91,4 +92,4 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
     if save_path:
         plt.savefig(save_path, dpi=300)
 
-    plt.show()
+    # plt.show()

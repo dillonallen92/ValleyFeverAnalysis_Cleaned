@@ -241,5 +241,7 @@ def main():
   
   plot_pfi_bar(pfi_df, save_path=run_dir/"pfi_bar.png", title=f"{county_name} Permutation Feature Importance (Bar)")
   
+  plt.show()
+  
 if __name__ == "__main__":
   main()
