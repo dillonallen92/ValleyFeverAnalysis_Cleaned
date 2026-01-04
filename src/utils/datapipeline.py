@@ -1,8 +1,8 @@
-from code.utils.preprocessing.basic import (
+from src.utils.preprocessing.basic import (
   read_data, create_feature_target_vecs, 
   create_sequences, train_test_split, scale_data
 )
-from code.utils.window_sizes.masking import(
+from src.utils.window_sizes.masking import(
   generate_padded_data, create_masking_vector
 ) 
 import torch 

@@ -6,11 +6,11 @@ import torch.optim as optim
 from pathlib import Path 
 
 # My own imports
-from code.models.lstm import LSTM 
-from code.models.trainer import Trainer
-from code.utils.loss_functions import RMSELoss
-from code.utils.config_file_parser import config_file_parser
-from code.utils.window_sizes.sliding_window_pipeline import SlidingWindowPipeline, SlidingWindowBatch
+from src.models.lstm import LSTM 
+from src.models.trainer import Trainer
+from src.utils.loss_functions import RMSELoss
+from src.utils.config_file_parser import config_file_parser
+from src.utils.window_sizes.sliding_window_pipeline import SlidingWindowPipeline, SlidingWindowBatch
   
 def main():
   config_path : Path = Path("config/masked_lstm_config.ini")

@@ -5,12 +5,12 @@ import numpy as np
 from pathlib import Path 
 
 # My Imports
-from code.utils.config_file_parser import config_file_parser
-from code.utils.datapipeline import DataPipeline
-from code.models.masked_lstm import MaskedLSTM
-from code.models.masked_trainer import MaskedTrainer
-from code.utils.loss_functions import RMSELoss
-from code.utils.plot_predictions import plot_predictions
+from src.utils.config_file_parser import config_file_parser
+from src.utils.datapipeline import DataPipeline
+from src.models.masked_lstm import MaskedLSTM
+from src.models.masked_trainer import MaskedTrainer
+from src.utils.loss_functions import RMSELoss
+from src.utils.plot_predictions import plot_predictions
 
 def main():
   # Load Config

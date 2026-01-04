@@ -1,0 +1,10 @@
+{
+    "hidden_size": 64,
+    "num_layers": 2,
+    "dropout": 0.2,
+    "learning_rate": 0.01,
+    "epochs": 10000,
+    "weight_decay": 1e-05,
+    "train_frac": 0.8,
+    "test_frac": 0.19999999999999996
+}

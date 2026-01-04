@@ -14,19 +14,19 @@ import json
 import matplotlib.pyplot as plt
 
 # My imports
-from code.models.lstm import LSTM 
-from code.models.masked_lstm import MaskedLSTM
-from code.models.trainer import Trainer
-from code.models.masked_trainer import MaskedTrainer
-from code.utils.loss_functions import RMSELoss
-from code.utils.config_file_parser import config_file_parser
-from code.utils.plot_predictions import plot_predictions
-from code.utils.plot_losses import plot_loss_curves
-from code.utils.datapipeline import DataPipeline
-from code.utils.window_sizes.sliding_window_pipeline import SlidingWindowPipeline, SlidingWindowBatch
-from code.interpretability.pfi import permutation_feature_importance
-from code.interpretability.pfi_plots import plot_pfi_radar, plot_pfi_bar
-from code.utils.metric_functions import rmse
+from src.models.lstm import LSTM 
+from src.models.masked_lstm import MaskedLSTM
+from src.models.trainer import Trainer
+from src.models.masked_trainer import MaskedTrainer
+from src.utils.loss_functions import RMSELoss
+from src.utils.config_file_parser import config_file_parser
+from src.utils.plot_predictions import plot_predictions
+from src.utils.plot_losses import plot_loss_curves
+from src.utils.datapipeline import DataPipeline
+from src.utils.window_sizes.sliding_window_pipeline import SlidingWindowPipeline, SlidingWindowBatch
+from src.interpretability.pfi import permutation_feature_importance
+from src.interpretability.pfi_plots import plot_pfi_radar, plot_pfi_bar
+from src.utils.metric_functions import rmse
 
 def main():
   # Change if needed
