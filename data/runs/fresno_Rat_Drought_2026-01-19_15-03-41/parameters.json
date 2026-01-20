@@ -5,6 +5,6 @@
     "learning_rate": 0.01,
     "epochs": 200,
     "weight_decay": 1e-05,
-    "train_frac": 0.75,
-    "test_frac": 0.25
+    "train_frac": 0.8,
+    "test_frac": 0.19999999999999996
 }

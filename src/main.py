@@ -30,12 +30,16 @@ from src.utils.metric_functions import rmse
 
 def main():
   # Change if needed
-  county_name = "Fresno"
+  county_name = "Kern"
   rodent_flag = True
+  drought_flag = True
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
   config_path = Path("config/masked_lstm_config.ini")
-  if rodent_flag:
+  if rodent_flag and drought_flag:
+     data_path  = Path(f"data/{county_name.lower()}_agg_drought.csv")
+     run_dir    = Path(f"data/runs/{county_name.lower()}_Rat_Drought_{timestamp}")
+  elif rodent_flag:
     data_path   = Path(f"data/merged_rodent_{county_name.lower()}_agg.csv")
     run_dir     = Path(f"data/runs/{county_name.lower()}_Rat_{timestamp}")
   else:
@@ -65,7 +69,7 @@ def main():
   
   # Isolate the features I want
   feature_columns = [col for col in df.columns if col != "VFRate"]
-  
+  print(feature_columns)
   # Create the feature and target vectors
   X = df[feature_columns].values
   y = df["VFRate"].values 
