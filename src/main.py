@@ -28,6 +28,10 @@ from src.interpretability.pfi import permutation_feature_importance
 from src.interpretability.pfi_plots import plot_pfi_radar, plot_pfi_bar
 from src.utils.metric_functions import rmse
 
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+print("Using device:", device)
+
+
 def main():
   # Change if needed
   county_name = "Kern"
@@ -95,13 +99,19 @@ def main():
         hidden_size= hidden_size, 
         num_layers= num_layers,
         dropout= dropout
-      )
+      ).to(device)
       
       optimizer = optim.Adam(model.parameters(), lr = learning_rate, weight_decay = weight_decay)
       trainer = Trainer(model=model, criterion=criterion, optimizer=optimizer, scaler_y = batch.scaler_y)
       
-      trainer.train(X_train = batch.X_train, y_train = batch.y_train, epochs=epochs)
-      preds, true = trainer.evaluate(batch.X_test, batch.y_test)
+      trainer.train(
+         X_train = batch.X_train.to(device), 
+         y_train = batch.y_train.to(device), 
+         epochs=epochs)
+      preds, true = trainer.evaluate(
+         batch.X_test.to(device), 
+         batch.y_test.to(device)
+         )
       
       rmse_sw = np.sqrt(np.mean((preds - true)**2))
       results.append({
@@ -137,7 +147,7 @@ def main():
     hidden_size= hidden_size,
     num_layers= num_layers,
     dropout= dropout
-  )
+  ).to(device)
   
   optimizer = optim.Adam(model.parameters(), lr = learning_rate, weight_decay=weight_decay)
   criterion = RMSELoss()
@@ -150,19 +160,19 @@ def main():
   )
   
   history = trainer.train(
-    X_train = dataset.X_train.permute(2,0,1),
-    y_train = dataset.y_train,
-    X_test= dataset.X_test.permute(2,0,1),
-    y_test=dataset.y_test,
-    mask_train = mask_batch.repeat(dataset.X_train.shape[2], 1, 1),
-    mask_test = mask_batch.repeat(dataset.X_test.shape[2], 1, 1),
+    X_train = dataset.X_train.permute(2,0,1).to(device),
+    y_train = dataset.y_train.to(device),
+    X_test= dataset.X_test.permute(2,0,1).to(device),
+    y_test=dataset.y_test.to(device),
+    mask_train = mask_batch.repeat(dataset.X_train.shape[2], 1, 1).to(device),
+    mask_test = mask_batch.repeat(dataset.X_test.shape[2], 1, 1).to(device),
     epochs= epochs
   )
   
   preds, true = trainer.evaluate(
-    X_test = dataset.X_test.permute(2,0,1),
-    y_test= dataset.y_test,
-    mask= mask_batch.repeat(dataset.X_test.shape[2], 1, 1)
+    X_test = dataset.X_test.permute(2,0,1).to(device),
+    y_test= dataset.y_test.to(device),
+    mask= mask_batch.repeat(dataset.X_test.shape[2], 1, 1).to(device)
   )
   
   rmse_final = np.sqrt(np.mean((preds - true)**2))
@@ -173,8 +183,8 @@ def main():
   # ----------------------------------------------------
   with torch.no_grad():
       train_preds = model(
-          dataset.X_train.permute(2,0,1),
-          mask_batch.repeat(dataset.X_train.shape[2], 1, 1)
+          dataset.X_train.permute(2,0,1).to(device),
+          mask_batch.repeat(dataset.X_train.shape[2], 1, 1).to(device)
       ).cpu().numpy().reshape(-1,1)
 
   train_preds_inv = dataset.scaler_y.inverse_transform(train_preds).flatten()
@@ -215,20 +225,39 @@ def main():
   results_df.to_csv(run_dir/"sliding_window_results.csv", index = False)
   best_vals.to_csv(run_dir/"best_window_sizes.csv", index = False)
   
-  pred_data = pd.DataFrame({
-    "true_test" : true_test_inv,
-    "pred_test" : pred_test_inv
+  # ----- Save Test Predictions -----
+  test_pred_data = pd.DataFrame({
+    "sample_index": np.arange(len(true_test_inv)),
+    "true_test": true_test_inv,
+    "pred_test": pred_test_inv
   })
-  pred_data.to_csv(run_dir/"true_vs_pred_test.csv", index=False)
+  test_pred_data.to_csv(run_dir/"true_vs_pred_test.csv", index=False)
+
+  # ----- Save Train Predictions -----
+  train_pred_data = pd.DataFrame({
+    "sample_index": np.arange(len(true_train_inv)),
+    "true_train": true_train_inv,
+    "pred_train": train_preds_inv
+  })
+  train_pred_data.to_csv(run_dir/"true_vs_pred_train.csv", index=False)
+
   
   # plot and save history curve
   plot_loss_curves(history, save_path = run_dir/"loss_curves.png")
+  # ----- Save Training History -----
+  history_df = pd.DataFrame({
+      "epoch": np.arange(1, len(history["train"]) + 1),
+      "train_loss": history["train"],
+      "test_loss": history["test"]
+  })
+  history_df.to_csv(run_dir/"training_history.csv", index=False)
+
   
   if bool(pipeline_params["run_pfi"]):
      importances, baseline_error = permutation_feature_importance(model = model,
-                                                                  X_test = dataset.X_test.permute(2,0,1),
-                                                                  y_test = dataset.y_test,
-                                                                  mask = mask_batch.repeat(dataset.X_test.shape[2], 1, 1),
+                                                                  X_test = dataset.X_test.permute(2,0,1).to(device),
+                                                                  y_test = dataset.y_test.to(device),
+                                                                  mask = mask_batch.repeat(dataset.X_test.shape[2], 1, 1).to(device),
                                                                   scaler_y = dataset.scaler_y,
                                                                   metric_fn = rmse,
                                                                   n_repeats = 40

@@ -21,12 +21,13 @@ class MaskedTrainer:
             self.optimizer.step()
             
             train_losses.append(loss.item())
-            if (epoch + 1) % 10 == 0:
-                self.model.eval()
-                with torch.no_grad():
-                    preds_test = self.model(X_test, mask_test)
-                    test_loss = self.criterion(preds_test, y_test).item()
-                    test_losses.append(test_loss)
+            
+            self.model.eval()
+            with torch.no_grad():
+                preds_test = self.model(X_test, mask_test)
+                test_loss = self.criterion(preds_test, y_test).item()
+                test_losses.append(test_loss)
+            if (epoch + 1)% 10 == 0:
                 print(f"Epoch: {epoch + 1:4d} | Train Loss: {loss.item():.4f} | Test Loss: {test_loss:.4f}")
                 
         history = {"train" : train_losses, "test": test_losses}
