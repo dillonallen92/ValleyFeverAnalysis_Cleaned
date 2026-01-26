@@ -94,3 +94,9 @@ def plot_pfi_bar(df, save_path=None, title="Permutation Feature Importance (Bar)
         plt.savefig(save_path, dpi=300)
 
     # plt.show()
+    
+def plot_pfi_boxplot(all_results, df, save_path=None, title="Permutation Feature Importance (Bar)"): 
+  
+  df_sorted = df.sort_values("Importance", ascending = False)
+  features  = df_sorted["Feature"].values
+  window_size = df_sorted["window_size"].values

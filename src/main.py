@@ -28,13 +28,23 @@ from src.interpretability.pfi import permutation_feature_importance
 from src.interpretability.pfi_plots import plot_pfi_radar, plot_pfi_bar
 from src.utils.metric_functions import rmse
 
+import random
+
+SEED = 42
+
+random.seed(SEED)
+np.random.seed(SEED)
+torch.manual_seed(SEED)
+torch.use_deterministic_algorithms(True, warn_only=True)
+
+
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 print("Using device:", device)
 
 
 def main():
   # Change if needed
-  county_name = "Kern"
+  county_name = "Fresno"
   rodent_flag = True
   drought_flag = True
   # Timestamp to track creation of run data
@@ -254,7 +264,7 @@ def main():
 
   
   if bool(pipeline_params["run_pfi"]):
-     importances, baseline_error = permutation_feature_importance(model = model,
+     importances, baseline_error, all_results = permutation_feature_importance(model = model,
                                                                   X_test = dataset.X_test.permute(2,0,1).to(device),
                                                                   y_test = dataset.y_test.to(device),
                                                                   mask = mask_batch.repeat(dataset.X_test.shape[2], 1, 1).to(device),
@@ -285,6 +295,8 @@ def main():
   plot_pfi_radar(pfi_df, save_path=run_dir/"pfi_radar_plot.png", title=f"{county_name} Permutation Feature Importance (Radar)")
   
   plot_pfi_bar(pfi_df, save_path=run_dir/"pfi_bar.png", title=f"{county_name} Permutation Feature Importance (Bar)")
+  
+  # plot_pfi_boxplot(all_results, pfi_df, save_path = run_dir/"pfi_boxplot.png", title = f"{county_name} Permutation Feature Importance (Boxplot)")
   
   plt.show()
   
