@@ -75,7 +75,8 @@ def main():
   train_frac                   = float(lstm_params["train_frac"])
   test_frac                    = 1 - train_frac
   
-  # import and clean the dataframe (remove date)
+  # import and clean the dataframe (remove date) 
+  # and maybe other columns im not interested in
   df = pd.read_csv(data_path)
   for col in ["YEAR_MONTH", "Year-Month", "DATE"]:
       if col in df.columns:
