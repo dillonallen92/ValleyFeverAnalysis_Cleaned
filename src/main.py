@@ -51,7 +51,7 @@ def main():
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
   config_path = Path("config/masked_lstm_config.ini")
   if rodent_flag and drought_flag:
-     data_path  = Path(f"data/{county_name.lower()}_agg_drought.csv")
+     data_path  = Path(f"data/{county_name.lower()}_agg_drought_baseline.csv")
      run_dir    = Path(f"data/runs/{county_name.lower()}_Rat_Drought_{timestamp}")
   elif rodent_flag:
     data_path   = Path(f"data/merged_rodent_{county_name.lower()}_agg.csv")
