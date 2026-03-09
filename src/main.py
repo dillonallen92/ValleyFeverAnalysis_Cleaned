@@ -45,13 +45,15 @@ print("Using device:", device)
 def main():
   # Change if needed
   county_name = "Fresno"
+  datafile_version = "baseline" # baseline has VFRate, logVF has log1pVFRate
+  tgt_variable = "VFRate"
   rodent_flag = True
   drought_flag = True
   # Timestamp to track creation of run data
   timestamp = pd.Timestamp.now().strftime("%Y-%m-%d_%H-%M-%S")
   config_path = Path("config/masked_lstm_config.ini")
   if rodent_flag and drought_flag:
-     data_path  = Path(f"data/{county_name.lower()}_agg_drought_baseline.csv")
+     data_path  = Path(f"data/{county_name.lower()}_agg_drought_{datafile_version}.csv")
      run_dir    = Path(f"data/runs/{county_name.lower()}_Rat_Drought_{timestamp}")
   elif rodent_flag:
     data_path   = Path(f"data/merged_rodent_{county_name.lower()}_agg.csv")
@@ -83,11 +85,11 @@ def main():
         df = df.drop(columns = [col])
   
   # Isolate the features I want
-  feature_columns = [col for col in df.columns if col != "VFRate"]
+  feature_columns = [col for col in df.columns if col != tgt_variable]
   print(feature_columns)
   # Create the feature and target vectors
   X = df[feature_columns].values
-  y = df["VFRate"].values 
+  y = df[tgt_variable].values 
   
   ########################################
   #       Sliding Window Pipeline        #

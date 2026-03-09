@@ -1,4 +1,3 @@
-'''
 import torch 
 import torch.nn as nn 
 
@@ -61,3 +60,4 @@ class MaskedLSTM(nn.Module):
         last_outputs = outputs[batch_idx, last_idx, :]          # (batch, hidden_size)
 
         return self.fc(last_outputs)
+'''
