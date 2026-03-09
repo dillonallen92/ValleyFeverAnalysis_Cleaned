@@ -45,8 +45,8 @@ print("Using device:", device)
 def main():
   # Change if needed
   county_name = "Fresno"
-  datafile_version = "baseline" # baseline has VFRate, logVF has log1pVFRate
-  tgt_variable = "VFRate"
+  datafile_version = "vfandfeatlog" # baseline has VFRate, logVF has log1pVFRate
+  tgt_variable = "log1pVFRate"
   rodent_flag = True
   drought_flag = True
   # Timestamp to track creation of run data
@@ -54,7 +54,7 @@ def main():
   config_path = Path("config/masked_lstm_config.ini")
   if rodent_flag and drought_flag:
      data_path  = Path(f"data/{county_name.lower()}_agg_drought_{datafile_version}.csv")
-     run_dir    = Path(f"data/runs/{county_name.lower()}_Rat_Drought_{timestamp}")
+     run_dir    = Path(f"data/runs/{county_name.lower()}_Rat_Drought_{datafile_version}_{timestamp}")
   elif rodent_flag:
     data_path   = Path(f"data/merged_rodent_{county_name.lower()}_agg.csv")
     run_dir     = Path(f"data/runs/{county_name.lower()}_Rat_{timestamp}")
@@ -145,7 +145,8 @@ def main():
   pipeline = DataPipeline(
     data_file_path=data_path,
     config_data = lstm_params,
-    window_sizes = window_sizes
+    window_sizes = window_sizes,
+    tgt_variable=tgt_variable
   )
   
   pipeline.load_data()
@@ -215,6 +216,7 @@ def main():
       pred_train=train_preds_inv,
       true_test=true_test_inv,
       pred_test=pred_test_inv,
+      tgt_variable = tgt_variable,
       title=f"({county_name}) Masked LSTM — True vs Predicted",
       save_path=run_dir/"prediction_curve.png"
   )

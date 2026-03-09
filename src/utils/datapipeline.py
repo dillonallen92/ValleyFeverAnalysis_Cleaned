@@ -22,13 +22,14 @@ class TensorDataset:
   scaler_y: MinMaxScaler
 
 class DataPipeline():
-  def __init__(self, data_file_path: Path, config_data: dict[str, Any], window_sizes: dict[str, int]):
+  def __init__(self, data_file_path: Path, config_data: dict[str, Any], window_sizes: dict[str, int], tgt_variable: str = "VFRate"):
     self.data_file_path = data_file_path 
     self.config_data = config_data
     self.window_sizes = window_sizes
     self.df = None 
     self.X = None 
     self.y = None 
+    self.tgt_variable = tgt_variable
     self.mask = None 
   
   def load_data(self):
@@ -42,9 +43,9 @@ class DataPipeline():
     return df 
   
   def build_windows(self):
-    features = [col for col in self.df.columns if col != "VFRate"]
+    features = [col for col in self.df.columns if col != self.tgt_variable]
     X = self.df[features]
-    y = self.df["VFRate"].to_numpy()
+    y = self.df[self.tgt_variable].to_numpy()
     
     padded, y_adj = generate_padded_data(X, self.window_sizes, y)
     mask = create_masking_vector(X, self.window_sizes)
