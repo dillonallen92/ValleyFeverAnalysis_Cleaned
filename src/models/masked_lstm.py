@@ -1,3 +1,4 @@
+'''
 import torch 
 import torch.nn as nn 
 
@@ -29,3 +30,34 @@ class MaskedLSTM(nn.Module):
         denom = valid_steps.sum(dim=1, keepdim=True).clamp(min=1.0)
         pooled = pooled / denom
         return self.fc(pooled)
+'''
+import torch
+import torch.nn as nn
+
+class MaskedLSTM(nn.Module):
+    def __init__(self, input_size: int, hidden_size: int = 64, num_layers: int = 2, dropout: float = 0.2):
+        super().__init__()
+        self.lstm = nn.LSTM(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout if num_layers > 1 else 0.0,
+        )
+        self.dropout = nn.Dropout(dropout)
+        self.fc = nn.Linear(hidden_size, 1)
+
+    def forward(self, x: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+        masked_x = x * mask
+        # masked_x = x
+        outputs, _ = self.lstm(masked_x)
+        outputs = self.dropout(outputs)
+
+        valid_steps = (mask.sum(dim=-1) > 0)                     # (batch, seq_len)
+        lengths = valid_steps.sum(dim=1).clamp(min=1)           # (batch,)
+        last_idx = (lengths - 1).long()                         # (batch,)
+
+        batch_idx = torch.arange(outputs.size(0), device=outputs.device)
+        last_outputs = outputs[batch_idx, last_idx, :]          # (batch, hidden_size)
+
+        return self.fc(last_outputs)
