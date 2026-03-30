@@ -38,7 +38,7 @@ class DataPipeline():
     for col in ["YEAR_MONTH", "Year-Month", "DATE"]:
       if col in df.columns:
         df = df.drop(columns = [col])
-    
+
     self.df = df
     return df 
   
