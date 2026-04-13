@@ -1,0 +1,10 @@
+{
+    "weight_decay": 1e-05,
+    "train_frac": 0.7,
+    "tgt_variable": "VFRate",
+    "num_layers": 1,
+    "learning_rate": 0.005,
+    "hidden_size": 32,
+    "epochs": 150,
+    "dropout": 0.4
+}

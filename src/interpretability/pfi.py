@@ -27,7 +27,7 @@ def permutation_feature_importance(model, X_test, y_test, mask, scaler_y, metric
       idx = torch.randperm(X_test.shape[1], generator = g)
       X_perm[:,:,feat] = X_test[:, idx, feat]
       mask_perm = mask.clone()
-      mask_perm[:, idx, feat] = mask[:, feat]
+      mask_perm[:, :, feat] = mask[:, idx, feat]
       
       with torch.no_grad():
         preds = model(X_perm, mask_perm).cpu().numpy().reshape(-1, 1)
