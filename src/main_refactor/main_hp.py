@@ -15,7 +15,7 @@ from sklearn.model_selection import ParameterSampler
 from src.models.lstm import LSTM 
 from src.models.masked_lstm import MaskedLSTM
 from src.models.trainer import Trainer
-from src.main_refactor.masked_trainer2 import MaskedTrainer
+from src.main_refactor.masked_trainer_optimized import MaskedTrainer
 from src.utils.loss_functions import RMSELoss
 from src.utils.config_file_parser import config_file_parser
 from src.utils.plot_predictions import plot_predictions
