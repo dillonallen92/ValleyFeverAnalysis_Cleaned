@@ -253,9 +253,9 @@ def search_manager(data_path: Path, frozen_windows: dict[str, int], grid: Parame
 
 if __name__ == "__main__":
     # --- 1. Global Setup & Flags ---
-    county_name = "Fresno"
-    datafile_version = "baseline" 
-    tgt_variable = "VFRate"
+    county_name = "Kern"
+    datafile_version = "feattransformed_vfrate" 
+    tgt_variable = "log1pVFRate"
     rodent_flag = True
     drought_flag = True
     
