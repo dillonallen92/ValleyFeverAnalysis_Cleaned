@@ -32,7 +32,7 @@ class MaskedTrainer:
                 test_losses.append(test_loss)
 
                 # ---------------------------------------------------------
-                # Convergence Monitor (Circuit Breaker)
+                # Convergence Monitor 
                 # ---------------------------------------------------------
                 # Wait 15 epochs for the model to warm up before checking
                 if epoch > 15:
